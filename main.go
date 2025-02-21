@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/miltonmullins/api-rest-go/controllers"
+	"github.com/miltonmullins/api-rest-go/repositories"
+	"github.com/miltonmullins/api-rest-go/services"
 )
 
 func main() {
@@ -19,11 +21,16 @@ func main() {
 }
 
 func initializeRoutes() *http.ServeMux {
+	 
+	controller := controllers.NewControllerPerson(
+		services.NewServicePerson(
+			repositories.NewPersonRepository()))
+
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /people", controllers.GetAll)
-	mux.HandleFunc("GET /person/{name}", controllers.Get)
-	mux.HandleFunc("POST /person", controllers.Post)
-	mux.HandleFunc("PUT /person/{name}", controllers.Put)
-	mux.HandleFunc("DELETE /person/{name}", controllers.Delete)
+	mux.HandleFunc("GET /people", controller.GetAll)
+	mux.HandleFunc("GET /person/{name}", controller.Get)
+	mux.HandleFunc("POST /person", controller.Post)
+	mux.HandleFunc("PUT /person/{name}", controller.Put)
+	mux.HandleFunc("DELETE /person/{name}", controller.Delete)
 	return mux
 }
