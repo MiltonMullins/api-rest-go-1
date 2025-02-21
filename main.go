@@ -21,7 +21,7 @@ func main() {
 }
 
 func initializeRoutes() *http.ServeMux {
-	 
+
 	controller := controllers.NewControllerPerson(
 		services.NewServicePerson(
 			repositories.NewPersonRepository()))

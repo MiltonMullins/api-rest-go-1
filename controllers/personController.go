@@ -18,11 +18,11 @@ type ControllerPerson interface {
 	Delete(w http.ResponseWriter, r *http.Request)
 }
 
-type controllerPerson struct{
+type controllerPerson struct {
 	servicePerson services.ServicePerson
 }
 
-func NewControllerPerson(servicePerson services.ServicePerson) controllerPerson{
+func NewControllerPerson(servicePerson services.ServicePerson) controllerPerson {
 	return controllerPerson{servicePerson}
 }
 
@@ -55,7 +55,7 @@ func (c controllerPerson) Get(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	//w.Write(jsonPerson)
-	fmt.Fprint(w,string(jsonPerson))
+	fmt.Fprint(w, string(jsonPerson))
 }
 
 func (c controllerPerson) Post(w http.ResponseWriter, r *http.Request) {
