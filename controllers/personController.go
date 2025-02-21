@@ -10,10 +10,26 @@ import (
 	"github.com/miltonmullins/api-rest-go/services"
 )
 
-func GetAll(w http.ResponseWriter, r *http.Request) {
+type ControllerPerson interface {
+	GetAll(w http.ResponseWriter, r *http.Request)
+	Get(w http.ResponseWriter, r *http.Request)
+	Post(w http.ResponseWriter, r *http.Request)
+	Put(w http.ResponseWriter, r *http.Request)
+	Delete(w http.ResponseWriter, r *http.Request)
+}
+
+type controllerPerson struct{
+	servicePerson services.ServicePerson
+}
+
+func NewControllerPerson(servicePerson services.ServicePerson) controllerPerson{
+	return controllerPerson{servicePerson}
+}
+
+func (c controllerPerson) GetAll(w http.ResponseWriter, r *http.Request) {
 	// Get all
 	log.Println("Get all")
-	jsonPeople, err := json.Marshal(services.GetAll())
+	jsonPeople, err := json.Marshal(c.servicePerson.GetAll())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -22,12 +38,12 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonPeople)
 }
 
-func Get(w http.ResponseWriter, r *http.Request) {
+func (c controllerPerson) Get(w http.ResponseWriter, r *http.Request) {
 	// Get
 	log.Println("Get")
 	name := r.PathValue("name")
 
-	person, err := services.Get(name)
+	person, err := c.servicePerson.Get(name)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -42,7 +58,7 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w,string(jsonPerson))
 }
 
-func Post(w http.ResponseWriter, r *http.Request) {
+func (c controllerPerson) Post(w http.ResponseWriter, r *http.Request) {
 	// Post
 	log.Println("Post")
 	var person entities.Person
@@ -53,7 +69,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = services.Post(person)
+	_, err = c.servicePerson.Post(person)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -62,7 +78,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Person Created")
 }
 
-func Put(w http.ResponseWriter, r *http.Request) {
+func (c controllerPerson) Put(w http.ResponseWriter, r *http.Request) {
 	// Put
 	log.Println("Put")
 
@@ -75,7 +91,7 @@ func Put(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//people[i] = person
-	_, err = services.Put(name, person)
+	_, err = c.servicePerson.Put(name, person)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -84,12 +100,12 @@ func Put(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%v Updated", name)
 }
 
-func Delete(w http.ResponseWriter, r *http.Request) {
+func (c controllerPerson) Delete(w http.ResponseWriter, r *http.Request) {
 	// Delete
 	log.Println("Delete")
 	name := r.PathValue("name")
 
-	_, err := services.Delete(name)
+	_, err := c.servicePerson.Delete(name)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
