@@ -1,0 +1,27 @@
+version: '2.33.0'
+
+services:
+  go-app:
+    container_name: go-app
+    image: milton87/go-app:1.0.0
+    build: .
+    environment:
+      DATABASE_URL: "host=go_db postgres://postgres:postgres@db:5432/postgres?sslmode=disable"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - go_db
+  go_db:
+    container_name: go_db
+    image: postgres:17.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      -pgdata:/var/lib/postgresql/data
+  
+volumes:
+  pgdata: {}
