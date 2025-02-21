@@ -6,12 +6,28 @@ import (
 	"github.com/miltonmullins/api-rest-go/repositories"
 )
 
-func GetAll() *[]entities.Person {
-	return repositories.GetAll()
+type ServicePerson interface {
+	GetAll() *[]entities.Person
+	Get(name string) (*entities.Person, error)
+	Post(person entities.Person) (*[]entities.Person, error)
+	Put(name string, person entities.Person) (*entities.Person, error)
+	Delete(name string) (*entities.Person, error)
 }
 
-func Get(name string) (*entities.Person, error) {
-	people := repositories.GetAll()
+type servicePerson struct {
+	personRepository repositories.PersonRepository
+}
+
+func NewServicePerson(personRepository repositories.PersonRepository) servicePerson {
+	return servicePerson{personRepository}
+}
+
+func (s servicePerson) GetAll() *[]entities.Person {
+	return s.personRepository.GetAll()
+}
+
+func (s servicePerson) Get(name string) (*entities.Person, error) {
+	people := s.personRepository.GetAll()
 
 	for _, pp := range *people {
 		if pp.Name == name {
@@ -22,14 +38,14 @@ func Get(name string) (*entities.Person, error) {
 	return nil, errors.New("person not found")
 }
 
-func Post(person entities.Person) (*[]entities.Person, error) {
-	return repositories.Post(person)
+func (s servicePerson) Post(person entities.Person) (*[]entities.Person, error) {
+	return s.personRepository.Post(person)
 }
 
-func Put(name string, person entities.Person) (*entities.Person, error){
-	return repositories.Put(name,person)
+func (s servicePerson) Put(name string, person entities.Person) (*entities.Person, error) {
+	return s.personRepository.Put(name, person)
 }
 
-func Delete(name string) (*entities.Person, error){
-	return repositories.Delete(name)
+func (s servicePerson) Delete(name string) (*entities.Person, error) {
+	return s.personRepository.Delete(name)
 }
