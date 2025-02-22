@@ -6,7 +6,7 @@ services:
     image: milton87/go-app:1.0.0
     build: .
     environment:
-      DATABASE_URL: "host=go_db postgres://postgres:postgres@db:5432/postgres?sslmode=disable"
+      DATABASE_URL: "postgres://postgres:postgres@go_db:5432/postgres?sslmode=disable"
     ports:
       - "8080:8080"
     depends_on:
@@ -21,7 +21,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      -pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
   
 volumes:
   pgdata: {}
