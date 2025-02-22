@@ -1,15 +1,14 @@
 package services
 
 import (
-	"errors"
 	"github.com/miltonmullins/api-rest-go/entities"
 	"github.com/miltonmullins/api-rest-go/repositories"
 )
 
 type ServicePerson interface {
 	GetAll() *[]entities.Person
-	Get(name string) (*entities.Person, error)
-	Post(person entities.Person) (*[]entities.Person, error)
+	GetByName(name string) (*entities.Person, error)
+	Post(person entities.Person) (*entities.Person, error)
 	Put(name string, person entities.Person) (*entities.Person, error)
 	Delete(name string) (*entities.Person, error)
 }
@@ -26,19 +25,11 @@ func (s servicePerson) GetAll() *[]entities.Person {
 	return s.personRepository.GetAll()
 }
 
-func (s servicePerson) Get(name string) (*entities.Person, error) {
-	people := s.personRepository.GetAll()
-
-	for _, pp := range *people {
-		if pp.Name == name {
-			return &pp, nil
-		}
-	}
-
-	return nil, errors.New("person not found")
+func (s servicePerson) GetByName(name string) (*entities.Person, error) {
+	return s.personRepository.GetByName(name)
 }
 
-func (s servicePerson) Post(person entities.Person) (*[]entities.Person, error) {
+func (s servicePerson) Post(person entities.Person) (*entities.Person, error) {
 	return s.personRepository.Post(person)
 }
 
