@@ -12,7 +12,7 @@ import (
 
 type ControllerPerson interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
-	Get(w http.ResponseWriter, r *http.Request)
+	GetByName(w http.ResponseWriter, r *http.Request)
 	Post(w http.ResponseWriter, r *http.Request)
 	Put(w http.ResponseWriter, r *http.Request)
 	Delete(w http.ResponseWriter, r *http.Request)
@@ -38,12 +38,12 @@ func (c controllerPerson) GetAll(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonPeople)
 }
 
-func (c controllerPerson) Get(w http.ResponseWriter, r *http.Request) {
+func (c controllerPerson) GetByName(w http.ResponseWriter, r *http.Request) {
 	// Get
 	log.Println("Get")
 	name := r.PathValue("name")
 
-	person, err := c.servicePerson.Get(name)
+	person, err := c.servicePerson.GetByName(name)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
